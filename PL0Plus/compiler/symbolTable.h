@@ -94,6 +94,79 @@ public:
 	int getVarSize();
 };
 
+(* ⭐ PL/0+ 新增：Rust 风格符号表 *)
+enum class DeclKind {
+	CONST,    // const x = 5;       — 不可变，立即初始化，不可借
+	VAR,      // var x;             — 可变，不要求初始化，不可借
+	LET,      // let x: i32 = 5;    — 不可变，立即初始化，可借 &
+	LET_MUT,  // let mut x: i32 = 5; — 可变，立即初始化，可借 &mut
+};
 
+struct RustSymbol {
+	string name;
+	string type;                  // "i8" | "i16" | "i32" | "&i32" | "&mut i32" | "integer"
+	int    addr;                  // 栈地址
+	int    scope_level;           // 作用域层级
+	int    decl_line;             // 声明行
+	int    first_assign_line;     // 第一次赋值行（-1 = 未赋值）
+	bool   is_initialized;
+	DeclKind decl_kind;
+	int    borrow_count_imm;      // 不可变借用计数
+	int    borrow_count_mut;      // 可变借用计数
 
-#endif // !_SYMBOLTABLE_H_
+	RustSymbol() : addr(0), scope_level(0), decl_line(0),
+		first_assign_line(-1), is_initialized(false),
+		decl_kind(DeclKind::VAR), borrow_count_imm(0), borrow_count_mut(0) {}
+
+	RustSymbol(string n, string t, int a, int lvl, int line, DeclKind k)
+		: name(n), type(t), addr(a), scope_level(lvl), decl_line(line),
+		first_assign_line(-1), is_initialized(false), decl_kind(k),
+		borrow_count_imm(0), borrow_count_mut(0) {}
+
+	(* 派生属性，不存状态 *)
+	bool is_mutable() const {
+		return decl_kind == DeclKind::VAR || decl_kind == DeclKind::LET_MUT;
+	}
+	bool can_be_borrowed() const {
+		return decl_kind == DeclKind::LET || decl_kind == DeclKind::LET_MUT;
+	}
+};
+
+class RustSymbolTable {
+private:
+	vector<RustSymbol> symbols;
+public:
+	RustSymbolTable() {}
+	void declare(string name, string type, DeclKind kind, int line);
+	RustSymbol* lookup(string name);
+	bool exists(string name) const;
+	void assign(string name, int line);
+	void enter_scope();
+	void exit_scope(int scope_level);
+	void borrow_imm(string name);
+	void borrow_mut(string name);
+	void release_borrows(string name);
+	int get_addr(string name);
+	void printTable();
+};
+
+(* ⭐ 错误码常量 *)
+namespace ErrCode {
+	const char* const E0001 = "E0001";  // 未声明标识符
+	const char* const E0002 = "E0002";  // 重复声明
+	const char* const E0010 = "E0010";  // 类型不匹配
+	const char* const E0011 = "E0011";  // 缺少类型标注
+	const char* const E0020 = "E0020";  // 借用规则违反
+	const char* const E0021 = "E0021";  // 不可变借用冲突
+	const char* const E0022 = "E0022";  // 可变借用冲突
+	const char* const E0023 = "E0023";  // 跨过程借用
+	const char* const E0024 = "E0024";  // 不可变变量被可变借用
+	const char* const E0025 = "E0025";  // 解引用非引用类型
+	const char* const E0026 = "E0026";  // 通过不可变借用赋值
+	const char* const E0027 = "E0027";  // 悬垂借用
+	const char* const E0040 = "E0040";  // const 被借用
+	const char* const E0041 = "E0041";  // var 被借用
+	const char* const E0099 = "E0099";  // 词法错误
+}
+
+#endif // !_SYMBOLTABLE_H

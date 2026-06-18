@@ -229,3 +229,95 @@ int sTable::getVarSize()
 {
 	return v.size();
 }
+
+(* ⭐ PL/0+ 新增：RustSymbolTable 实现 *)
+
+void RustSymbolTable::declare(string name, string type, DeclKind kind, int line) {
+	(* 检查重复声明 *)
+	for (const auto& s : symbols) {
+		if (s.name == name) {
+			return;  // E0002 重复声明
+		}
+	}
+	int next_addr = symbols.size();
+	symbols.push_back(RustSymbol(name, type, next_addr, 0, line, kind));
+}
+
+RustSymbol* RustSymbolTable::lookup(string name) {
+	for (auto& s : symbols) {
+		if (s.name == name) {
+			return &s;
+		}
+	}
+	return nullptr;
+}
+
+bool RustSymbolTable::exists(string name) const {
+	for (const auto& s : symbols) {
+		if (s.name == name) return true;
+	}
+	return false;
+}
+
+void RustSymbolTable::assign(string name, int line) {
+	RustSymbol* s = lookup(name);
+	if (s) {
+		if (!s->is_initialized) {
+			s->first_assign_line = line;
+		}
+		s->is_initialized = true;
+	}
+}
+
+void RustSymbolTable::enter_scope() {
+	for (auto& s : symbols) {
+		s.scope_level++;
+	}
+}
+
+void RustSymbolTable::exit_scope(int scope_level) {
+	(* 移除该层的所有符号，递减借用的 owner 的计数 *)
+	vector<RustSymbol> remaining;
+	for (auto& s : symbols) {
+		if (s.scope_level == scope_level) {
+			continue;  // 离开作用域，丢弃
+		}
+		remaining.push_back(s);
+	}
+	symbols = remaining;
+}
+
+void RustSymbolTable::borrow_imm(string name) {
+	RustSymbol* s = lookup(name);
+	if (s) s->borrow_count_imm++;
+}
+
+void RustSymbolTable::borrow_mut(string name) {
+	RustSymbol* s = lookup(name);
+	if (s) s->borrow_count_mut++;
+}
+
+void RustSymbolTable::release_borrows(string name) {
+	RustSymbol* s = lookup(name);
+	if (s) {
+		s->borrow_count_imm = 0;
+		s->borrow_count_mut = 0;
+	}
+}
+
+int RustSymbolTable::get_addr(string name) {
+	RustSymbol* s = lookup(name);
+	return s ? s->addr : -1;
+}
+
+void RustSymbolTable::printTable() {
+	std::cout << "=== Rust Symbol Table ===\n";
+	for (const auto& s : symbols) {
+		std::cout << "  " << s.name << " : " << s.type
+			<< "  scope=" << s.scope_level
+			<< "  line=" << s.decl_line
+			<< "  init=" << (s.is_initialized ? "Y" : "N")
+			<< "  borrow(imm=" << s.borrow_count_imm
+			<< ", mut=" << s.borrow_count_mut << ")\n";
+	}
+}
