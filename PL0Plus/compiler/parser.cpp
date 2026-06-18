@@ -1520,16 +1520,39 @@ void Parser::handleCompoundStatement(AstNode * n, sTable * s)
 {
 	AstNode* currentNode = n;
 	sTable* currentTable = s;
+	
+	// ⭐ 记录进入作用域前的变量数
+	int var_count_before = currentTable->getVarSize();
+	
 	handleStatementTable(currentNode->child[1], currentTable);
+	
+	// ⭐ 计算该作用域新增的变量数，生成 REL 指令
+	int var_count_after = currentTable->getVarSize();
+	int var_count_in_scope = var_count_after - var_count_before;
+	if (var_count_in_scope > 0) {
+		pcode.push_back(pCode("REL", 0, var_count_in_scope));
+	}
 }
 
 void Parser::handleConditionStatement(AstNode * n, sTable * s)
 {
 	AstNode* currentNode = n;
 	sTable* currentTable = s;
+	
+	// ⭐ 记录进入作用域前的变量数
+	int var_count_before = currentTable->getVarSize();
+	
 	handleCondition(currentNode->child[1], currentTable);
 	pcode.push_back(pCode("JPC", 0, 0x3f3f3f));
 	handleStatement(currentNode->child[3], currentTable);
+	
+	// ⭐ then 分支结束，生成 REL 指令
+	int var_count_after_then = currentTable->getVarSize();
+	int var_count_in_then = var_count_after_then - var_count_before;
+	if (var_count_in_then > 0) {
+		pcode.push_back(pCode("REL", 0, var_count_in_then));
+	}
+	
 	for (int i = pcode.size() - 1; i > -1; --i)
 	{
 		if (pcode[i].op == "JPC" && pcode[i].a2 == 0x3f3f3f)
@@ -1572,11 +1595,23 @@ void Parser::handleLoopStatement(AstNode * n, sTable * s)
 {
 	AstNode* currentNode = n;
 	sTable* currentTable = s;
+	
+	// ⭐ 记录进入作用域前的变量数
+	int var_count_before = currentTable->getVarSize();
+	
 	int jump = pcode.size();
 	handleCondition(currentNode->child[1], currentTable);
 	pcode.push_back(pCode("JPC", 0, 0x3f3f3f));
 	//int jump = pcode.size();
 	handleStatement(currentNode->child[3], currentTable);
+	
+	// ⭐ 循环体结束，生成 REL 指令
+	int var_count_after_loop = currentTable->getVarSize();
+	int var_count_in_loop = var_count_after_loop - var_count_before;
+	if (var_count_in_loop > 0) {
+		pcode.push_back(pCode("REL", 0, var_count_in_loop));
+	}
+	
 	//handleCondition(currentNode->child[1], currentTable);
 	for (int i = pcode.size() - 1; i > -1; --i)
 	{

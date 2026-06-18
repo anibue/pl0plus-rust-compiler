@@ -156,6 +156,7 @@ public:
 	void release_borrows(string name);
 	int get_addr(string name);
 	int get_scope_level() const { return current_scope_level; }  // ⭐ 新增
+	int get_var_count() const { return symbols.size(); }  // ⭐ 新增：获取当前变量总数
 	void printTable();
 
 	// ⭐ 快照/回滚支持
