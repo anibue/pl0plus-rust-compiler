@@ -1,0 +1,55 @@
+# Build artifacts
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.a
+*.lib
+*.pdb
+*.exp
+*.ilk
+
+# Qt
+*.pro.user
+*.qmlc
+moc_*.cpp
+moc_*.h
+qrc_*.cpp
+ui_*.h
+*.qrc.depends
+
+# Build directories
+build/
+build-*/
+out/
+Release/
+Debug/
+*.Release/
+*.Debug/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Compiled outputs
+*.COD
+*.cod
+*.o.cod
+PL0_Compiler.exe
+LL1_Compiler.exe
+PL0.exe
+
+# PL/0 compilation outputs
+E*.COD
+P*.COD
+T*.COD
+test1.cod
+
+# Local backups
+*.bak
+*~
