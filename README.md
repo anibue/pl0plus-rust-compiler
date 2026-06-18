@@ -68,11 +68,11 @@ E:\rust_com\
 
 **报告位置**：`PL0Plus/docs/report/final-report.md`
 
-**主要内容**：
-- 词法层扩展（+8 Token）
-- 文法层扩展（+16 产生式）
-- 借用检查器（5 条规则 + 作用域管理）
-- pcode 扩展与虚拟机（4 条新指令）
+**分章报告**：
+- W1 报告：`PL0Plus/docs/report/content-2-rust-if-analysis.md`
+- **W2 报告**：`PL0Plus/docs/report/content-3-lexer-grammar.md` ⭐
+- W3 报告：`PL0Plus/docs/report/content-3-borrow-checker.md`
+- W4 报告：`PL0Plus/docs/report/content-3-pcode-vm.md`
 
 ---
 

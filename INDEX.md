@@ -30,8 +30,9 @@
 E:\rust_com\PL0Plus\docs\report\
 ├── final-report.md                    # ⭐ 最终报告（15,000 字）
 ├── content-2-rust-if-analysis.md      # W1 报告：Rust if 词法/语法分析
+├── content-3-lexer-grammar.md         # ⭐ W2 报告：词法/语法扩展
 ├── content-3-borrow-checker.md        # W3 报告：借用检查器
-└── content-3-pcode-vm.md              # W4 报告：pcode 扩展与虚拟机
+└── content-3-pcode-vm.md             # W4 报告：pcode 扩展与虚拟机
 ```
 
 ### 设计文档
