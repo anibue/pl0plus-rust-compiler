@@ -1465,6 +1465,10 @@ void Parser::handleStatement(AstNode * n, sTable * s)
 	{
 		handleRepeatStatement(currentNode->child[0], currentTable);
 	}
+	else if (currentNode->child[0]->getType() == GrammarSymSpace::LETDECLARATION)
+	{
+		handleLetDeclaration(currentNode->child[0], currentTable);
+	}
 }
 
 void Parser::handleAssignStatement(AstNode * n, sTable * s)
