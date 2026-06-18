@@ -1153,6 +1153,10 @@ int Parser::getUseType(AstNode * node)
 	{
 		return 3;
 	}
+	if (node->getType() == GrammarSymSpace::LETDECLARATIONMUT)//声明let
+	{
+		return 2;
+	}
 	if (node->getType() == GrammarSymSpace::ASSIGHNSTATEMENT ||
 		node->getType() == GrammarSymSpace::READVAR)//赋值语句和读变量，使用var
 	{
@@ -1763,37 +1767,15 @@ bool Parser::errorEmpty()
 (* ⭐ PL/0+ 新增方法实现 *)
 
 void Parser::handleLetDeclaration(AstNode* n, sTable* s) {
-	(* 简化实现：仅做语法分析，不生成 pcode *)
-	(* 当前 token 应该是 LETSYM（已消费）*)
-	(* 1. 可选 MUTSYM *)
-	bool is_mut = false;
-	if (currentToekn.getType() == MUTSYM) {
-		is_mut = true;
-	}
-	
-	(* 2. ident *)
-	string name = currentToekn.getVal();
-	
-	(* 3. COLONSYM *)
-	(* 期望 COLONSYM *)
-	
-	(* 4. type *)
-	string typeName;
-	bool isRef = false, isMutRef = false;
-	handleType(typeName, isRef, isMutRef);
-	
-	(* 5. BECOMESSYM *)
-	(* 期望 BECOMESSYM *)
-	
-	(* 6. expression *)
-	(* 解析表达式 *)
-	
-	(* 7. SEMICOLONSYM *)
-	(* 期望 SEMICOLONSYM *)
-	
-	(* 8. 注册到符号表（简化版）*)
-	(* DeclKind kind = is_mut ? DeclKind::LET_MUT : DeclKind::LET; *)
-	(* rustSymTable->declare(name, typeName, kind, currentLine()); *)
+	AstNode* currentNode = n;
+	sTable* currentTable = s;
+	AstNode* mutNode = currentNode->child[1];
+	bool is_mut = (mutNode->child[0]->getType() == GrammarSymSpace::MUTSYM);
+	int idIdx = is_mut ? 1 : 0;
+	int exprIdx = is_mut ? 5 : 4;
+	handleExpression(mutNode->child[exprIdx], currentTable);
+	pos tmp = currentTable->findVar(mutNode->child[idIdx]->getInfo());
+	pcode.push_back(pCode("STO", tmp.pre, tmp.off));
 }
 
 void Parser::handleType(string& outType, bool& isRef, bool& isMutRef) {
