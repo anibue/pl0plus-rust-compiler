@@ -1,145 +1,183 @@
-# 资料下载索引 — `E:\rust_com\`
+# 项目文件索引 — `E:\rust_com\`
 
-> **生成时间：** 2026-06-17
-> **课程：** Rust 编译器实现
+> **最后更新：** 2026-06-18  
+> **项目状态：** ✅ 已完成
 
 ---
 
-## 📊 下载结果总览
+## 📊 项目文件总览
 
-| 项目 | 路径 | 大小 | 状态 |
+| 类别 | 路径 | 说明 | 状态 |
 |------|------|------|------|
-| 📘 **mrustc** ⭐ | `mrustc/` | ~11 MB | ✅ 完整下载 |
-| 🦀 **rustc 官方** | `rust/` | 数百 MB | ✅ 完整下载 |
-| 🏗️ **rustc_codegen_gcc** | `rustc_codegen_gcc/` | ~2.5 MB | ✅ 完整下载 |
-| 🔧 **gccrs** | `gccrs/` | 较大 | ✅ 完整下载 |
-| 📋 资料说明 | `README.md` | 4.6 KB | ✅ 已生成 |
+| 📘 **最终项目** | `PL0Plus/` | PL/0+ 编译器（已完成）| ✅ |
+| 📄 **设计文档** | `docs/superpowers/specs/` | Spec + PRD | ✅ |
+| 📝 **报告文档** | `PL0Plus/docs/report/` | 最终报告 + 分章报告 | ✅ |
+| 🌟 **参考编译器** | `mrustc/` | C++ 版 Rust 编译器 | ✅ |
+| 🦀 **参考编译器** | `rust/` | rustc 官方源码 | ✅ |
+| 🔧 **参考编译器** | `gccrs/` | GCC 的 Rust 前端 | ✅ |
+| 🔧 **参考编译器** | `rustc_codegen_gcc/` | rustc 的 GCC 后端 | ✅ |
+| 📋 **基线源码** | `PL0_compiler_with_LL1_and_QT/` | PL/0 基线 | ✅ |
+| 📋 **基线源码** | `PL0/` | 南航版 PL/0 | ✅ |
+| 📋 **基线源码** | `PL-0-Compiler/` | LLVM 版 PL/0 | ✅ |
 
 ---
 
-## 🎯 课程必做内容对应表
+## 🎯 核心文件路径
 
-### 必做内容 2 — if 条件语句的词法/语法分析
+### 最终报告
 
-| 参考项目 | 关键目录 | 用途 |
-|----------|----------|------|
-| `mrustc/src/parse/` | `lex.cpp` `root.cpp` `token.cpp` | 词法分析 + 语法分析（C++） |
-| `rust/compiler/rustc_lexer/` | 词法分析器 | 工业级实现参考 |
-| `rust/compiler/rustc_parse/` | 语法分析器 | 工业级实现参考 |
+```
+E:\rust_com\PL0Plus\docs\report\
+├── final-report.md                    # ⭐ 最终报告（15,000 字）
+├── content-2-rust-if-analysis.md      # W1 报告：Rust if 词法/语法分析
+├── content-3-borrow-checker.md        # W3 报告：借用检查器
+└── content-3-pcode-vm.md              # W4 报告：pcode 扩展与虚拟机
+```
 
-**EBNF 文法**可以从以下地方提取：
-- `mrustc/src/parse/root.cpp` 中找 if 相关产生式
-- `rust/compiler/rustc_parse/src/grammar/` 中有完整 grammar
+### 设计文档
 
-### 必做内容 3 — PL/0 改造
+```
+E:\rust_com\docs\superpowers\specs\
+├── 2026-06-17-pl0-rust-compiler-spec.md   # Spec（650 行，52 条决策）
+└── 2026-06-17-pl0-rust-compiler-prd.md    # PRD（360 行）
+```
 
-| 任务 | 推荐参考 |
-|------|----------|
-| 整数类型 i8/i16/i32 | `mrustc/src/ast/types.cpp` |
-| Rust if 语句 | `mrustc/src/parse/root.cpp` |
-| 栈内存管理 | `mrustc/src/trans/` 目录 |
+### PL0Plus 编译器核心
+
+```
+E:\rust_com\PL0Plus\compiler\
+├── lexer.h/cpp              # 词法分析器（+8 Token）
+├── parser.h/cpp             # 语法分析器（LL(1)）
+├── grammar.h/cpp            # 文法定义（+16 产生式）
+├── grammarDefinition.h/cpp  # 文法符号定义
+├── symbolTable.h/cpp        # 符号表管理
+├── borrow_checker.h/cpp     # ⭐ 借用检查器（新增）
+├── AstNode.h/cpp            # AST 节点
+├── token.h/cpp              # Token 定义
+└── ErrorMessage.h/cpp       # 错误处理
+```
+
+### PL0Plus 虚拟机
+
+```
+E:\rust_com\PL0Plus\vm\
+├── instruction.h            # 指令定义（12 条）
+├── stack.h                  # 栈实现
+└── pl0vm.h/cpp              # ⭐ 虚拟机实现（新增）
+```
+
+### 测试用例
+
+```
+E:\rust_com\PL0Plus\tests\
+├── t00_minimal.pl0          # 最小测试
+├── t01_basic_compat.pl0     # 基础兼容性
+├── t02_while_compat.pl0     # while 循环
+├── t03_procedure_compat.pl0 # 过程调用
+├── t04_if_compat.pl0        # if 语句
+├── t05_expr_compat.pl0      # 表达式
+├── t06_lexical.pl0          # 词法测试
+├── t07_const_while.pl0      # const + while
+├── t08_repeat_until.pl0     # repeat-until
+├── t09_nested_if.pl0        # 嵌套 if
+└── t10_comprehensive.pl0    # 综合测试
+```
 
 ---
 
-## 🔍 关键文件路径速查
+## 🔍 参考编译器关键文件
 
 ### mrustc（最推荐 ⭐）
+
 ```
-E:\rust_com\mrustc\
-├── README.md                              # 项目说明
-├── Makefile                               # 构建脚本
-└── src\
-    ├── main.cpp                           # 编译器入口
-    ├── parse\
-    │   ├── lex.cpp / lex.hpp              # ⭐ 词法分析器
-    │   ├── token.cpp / token.hpp          # Token 定义
-    │   ├── root.cpp                       # ⭐ 语法分析器（顶层）
-    │   ├── expr.cpp                       # 表达式解析
-    │   ├── pattern.cpp                    # 模式解析
-    │   └── eTokenType.enum.h              # Token 类型枚举
-    ├── ast\                               # 抽象语法树
-    ├── hir\                               # 高层中间表示
-    ├── hir_typeck\                        # 类型检查
-    ├── mir\                               # 中层中间表示
-    └── trans\                             # 代码生成
+E:\rust_com\mrustc\src\parse\
+├── lex.cpp / lex.hpp              # ⭐ 词法分析器（C++）
+├── token.cpp / token.hpp          # Token 定义
+├── root.cpp                       # ⭐ 语法分析器（顶层）
+├── expr.cpp                       # 表达式解析
+├── pattern.cpp                    # 模式解析
+└── eTokenType.enum.h              # Token 类型枚举
 ```
 
 ### rustc（工业级参考）
+
 ```
 E:\rust_com\rust\compiler\
-├── rustc_lexer\                           # ⭐ 词法分析器
-├── rustc_parse\                           # ⭐ 语法分析器
+├── rustc_lexer\                   # ⭐ 词法分析器
+├── rustc_parse\                   # ⭐ 语法分析器
 │   ├── src\
-│   │   ├── lexer\                         # 词法分析实现
-│   │   └── grammar\                       # 语法定义
-│   └── grammar\                           # 完整 EBNF 文法
-├── rustc_ast\                             # AST 定义
-├── rustc_hir\                             # HIR
-├── rustc_typeck\                          # 类型检查
-└── rustc_codegen_*\                       # 代码生成
-```
-
-### rustc_codegen_gcc
-```
-E:\rust_com\rustc_codegen_gcc\
-├── src\                                   # GCC 后端实现
-└── README.md                              # 介绍
-```
-
-### gccrs
-```
-E:\rust_com\gccrs\
-├── gcc\                                   # GCC 源代码集成
-│   └── rust\                              # Rust 前端实现
-├── configure
-└── Makefile.in
+│   │   ├── lexer\                 # 词法分析实现
+│   │   └── grammar\               # 语法定义
+│   └── grammar\                   # 完整 EBNF 文法
+├── rustc_ast\                     # AST 定义
+├── rustc_hir\                     # HIR
+├── rustc_typeck\                  # 类型检查
+└── rustc_codegen_*\               # 代码生成
 ```
 
 ---
 
-## 💡 接下来怎么用这些资料
+## 💡 快速访问指南
 
-### 步骤 1：先看 mrustc README
+### 查看最终报告
+
 ```bash
-cd e:/rust_com/mrustc
-cat README.md
+cd E:\rust_com\PL0Plus\docs\report
+cat final-report.md
 ```
 
-### 步骤 2：浏览 mrustc 词法分析器
-```bash
-# 推荐先看 token 定义
-cat e:/rust_com/mrustc/src/parse/eTokenType.enum.h
+### 查看设计文档
 
-# 再看词法分析
-less e:/rust_com/mrustc/src/parse/lex.cpp
+```bash
+# 查看 Spec（技术设计）
+cat E:\rust_com\docs\superpowers\specs\2026-06-17-pl0-rust-compiler-spec.md
+
+# 查看 PRD（产品需求）
+cat E:\rust_com\docs\superpowers\specs\2026-06-17-pl0-rust-compiler-prd.md
 ```
 
-### 步骤 3：找 if 语句的 EBNF
+### 运行测试
+
 ```bash
-# 在 mrustc 中找 if 相关的代码
-grep -rn "if_expr" e:/rust_com/mrustc/src/parse/root.cpp
+cd E:\rust_com\PL0Plus
+./test_compiler.exe tests/t01_basic_compat.pl0
 ```
 
-### 步骤 4：对比 rustc 的实现
+### 查看 mrustc 词法分析器
+
 ```bash
-# 看 rustc 的 if 表达式定义
-ls e:/rust_com/rust/compiler/rustc_ast/src/ast.rs | xargs grep "If"
+# 查看 Token 定义
+cat E:\rust_com\mrustc\src\parse\eTokenType.enum.h
+
+# 查看词法分析实现
+less E:\rust_com\mrustc\src\parse\lex.cpp
 ```
+
+---
+
+## 📅 项目时间线
+
+| 日期 | 事件 |
+|------|------|
+| 2026-06-17 | 项目启动，下载参考资料 |
+| 2026-06-17 | 完成 W1 报告（Rust if 词法/语法分析）|
+| 2026-06-18 上午 | 完成 W2 词法/语法扩展 |
+| 2026-06-18 下午 | 完成 W3 借用检查器 + W4 pcode/VM |
+| 2026-06-18 晚上 | 完成最终报告，项目收尾 |
 
 ---
 
 ## ⚠️ 注意事项
 
-1. **不要尝试编译这些项目** — 只是参考源码
-2. **mrustc 优先** — 课程要求 C/C++，这个最合适
-3. **rustc 看不动就别看** — 太工业级，初学没必要
-4. **EBNF 文法** — 重点从 mrustc 的 `root.cpp` 提取
+1. **PL0Plus 是最终项目** — 所有工作都在此目录
+2. **参考编译器仅供学习** — 不要尝试编译它们
+3. **mrustc 优先** — 课程要求 C/C++，这个最合适
+4. **最终报告在 PL0Plus/docs/report/** — 这是提交的内容
 
 ---
 
-## 📅 下载时间线
+## 📞 相关文档
 
-- 11:00 - mrustc 完成 (~3 分钟)
-- 10:53 - rustc_codegen_gcc 完成 (~7 秒)
-- 11:00 - gccrs 完成 (~6 分钟)
-- 11:02 - rust 完成 (~7 分钟)
+- [README.md](README.md) — 项目总览
+- [PL0Plus/README.md](PL0Plus/README.md) — PL0Plus 项目说明
+- [PL0Plus/docs/report/final-report.md](PL0Plus/docs/report/final-report.md) — 最终报告
