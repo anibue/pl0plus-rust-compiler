@@ -134,8 +134,16 @@ struct Symbol {
 class RustSymbolTable {
 private:
 	vector<Symbol> symbols;
+	int current_scope_level;  // ⭐ 新增：当前作用域层级
+	stack<SymbolSnapshot> snapshot_stack;  // ⭐ 新增：快照栈
+
+	struct SymbolSnapshot {
+		vector<Symbol> symbols_copy;
+		int scope_level_copy;
+	};
+
 public:
-	RustSymbolTable() {}
+	RustSymbolTable() : current_scope_level(0) {}
 	void declare(string name, string type, DeclKind kind, int line);
 	Symbol* lookup(string name);
 	bool exists(string name) const;
@@ -144,9 +152,16 @@ public:
 	void exit_scope(int scope_level);
 	void borrow_imm(string name);
 	void borrow_mut(string name);
+	void release_borrow(string owner, bool is_mut);  // ⭐ 精确释放单个借用
 	void release_borrows(string name);
 	int get_addr(string name);
+	int get_scope_level() const { return current_scope_level; }  // ⭐ 新增
 	void printTable();
+
+	// ⭐ 快照/回滚支持
+	void take_snapshot();
+	void rollback_snapshot();
+	void commit_snapshot();
 };
 
 using RustSymbol = Symbol;

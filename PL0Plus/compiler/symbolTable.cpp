@@ -238,7 +238,7 @@ void RustSymbolTable::declare(string name, string type, DeclKind kind, int line)
 		}
 	}
 	int next_addr = symbols.size();
-	symbols.push_back(Symbol(name, type, next_addr, 0, line, kind));
+	symbols.push_back(Symbol(name, type, next_addr, current_scope_level, line, kind));
 }
 
 Symbol* RustSymbolTable::lookup(string name) {
@@ -268,9 +268,7 @@ void RustSymbolTable::assign(string name, int line) {
 }
 
 void RustSymbolTable::enter_scope() {
-	for (auto& s : symbols) {
-		s.scope_level++;
-	}
+	current_scope_level++;
 }
 
 void RustSymbolTable::exit_scope(int scope_level) {
@@ -283,6 +281,7 @@ void RustSymbolTable::exit_scope(int scope_level) {
 		remaining.push_back(s);
 	}
 	symbols = remaining;
+	current_scope_level--;
 }
 
 void RustSymbolTable::borrow_imm(string name) {
@@ -303,6 +302,17 @@ void RustSymbolTable::release_borrows(string name) {
 	}
 }
 
+void RustSymbolTable::release_borrow(string owner, bool is_mut) {
+	Symbol* s = lookup(owner);
+	if (s) {
+		if (is_mut) {
+			if (s->borrow_count_mut > 0) s->borrow_count_mut--;
+		} else {
+			if (s->borrow_count_imm > 0) s->borrow_count_imm--;
+		}
+	}
+}
+
 int RustSymbolTable::get_addr(string name) {
 	RustSymbol* s = lookup(name);
 	return s ? s->addr : -1;
@@ -317,5 +327,26 @@ void RustSymbolTable::printTable() {
 			<< "  init=" << (s.is_initialized ? "Y" : "N")
 			<< "  borrow(imm=" << s.borrow_count_imm
 			<< ", mut=" << s.borrow_count_mut << ")\n";
+	}
+}
+
+void RustSymbolTable::take_snapshot() {
+	SymbolSnapshot snap;
+	snap.symbols_copy = symbols;
+	snap.scope_level_copy = current_scope_level;
+	snapshot_stack.push(snap);
+}
+
+void RustSymbolTable::rollback_snapshot() {
+	if (snapshot_stack.empty()) return;
+	SymbolSnapshot snap = snapshot_stack.top();
+	snapshot_stack.pop();
+	symbols = snap.symbols_copy;
+	current_scope_level = snap.scope_level_copy;
+}
+
+void RustSymbolTable::commit_snapshot() {
+	if (!snapshot_stack.empty()) {
+		snapshot_stack.pop();
 	}
 }
