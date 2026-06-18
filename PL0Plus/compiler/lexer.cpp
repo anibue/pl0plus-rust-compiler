@@ -4,11 +4,13 @@
 #include<algorithm>
 #include<iostream>
 #include<bitset>
+#include<cctype>    (* ⭐ 新增：isalnum() 用于 maximal-munch 边界检查 *)
 using std::string;
 
-string Types[35]{ "ERROR", "ID", "NUM", "PLUSSYM", "MINUSSYM", "TIMESSYM", "DIVISIONSYM", "EQLSYM", "NEQLSYM", "LTSYM", "LESYM", "GTSYM", "GESYM", "BECOMESSYM",
+string Types[43]{ "ERROR", "ID", "NUM", "PLUSSYM", "MINUSSYM", "TIMESSYM", "DIVISIONSYM", "EQLSYM", "NEQLSYM", "LTSYM", "LESYM", "GTSYM", "GESYM", "BECOMESSYM",
 "LPARENSYM", "RPARENSYM", "SEMICOLONSYM","PERIODSYM", "COMMASYM","ODDSYM", "BEGINSYM","ENDSYM", "IFSYM", "THENSYM","ELSESYM", "WHILESYM", "WRITESYM", "READSYM", "DOSYM",
-"CALLSYM", "CONSTSYM", "VARSYM", "PROCSYM", "REPEATSYM","UNTILSYM" };
+"CALLSYM", "CONSTSYM", "VARSYM", "PROCSYM", "REPEATSYM","UNTILSYM",
+"LETSYM", "MUTSYM", "I8SYM", "I16SYM", "I32SYM", "AMPSYM", "AMPMUTSYM", "COLONSYM" };    (* ⭐ 后 8 个为 PL/0+ 新增 *)
 
 int Lexer::next()
 {
@@ -16,7 +18,7 @@ int Lexer::next()
 	{
 		++n;
 		++c;
-		return EOF;
+		return EOF_STATE;   (* ⭐ 用 EOF_STATE 避免与 iostream EOF 冲突 *)
 	}
 	if (text[n] == ' ')
 	{
@@ -127,6 +129,12 @@ int Lexer::next()
 		++c;
 		return state::PERIOD;
 	}
+	else if (text[n] == '&')    (* ⭐ 新增：识别 & 触发 AMP 状态 *)
+	{
+		++n;
+		++c;
+		return state::AMP;
+	}
 	else
 	{
 		++n;
@@ -151,7 +159,7 @@ Lexer::Lexer(string t)
 			cout << tokens[tokens.size() - 1].getVal() << " " << tokens[tokens.size() - 1].getVal().length() << "\n";*/
 		switch (type)
 		{
-		case EOF:
+		case EOF_STATE:    (* ⭐ 改自 EOF *)
 		case NUL:
 			rr = r; rc = c - 1; rn = n - 1;
 			type = next();
@@ -290,12 +298,38 @@ Lexer::Lexer(string t)
 				}
 				else if (revalue == "until")
 				{
-					table.insert(pair<string, Token>(text.substr(rn, n - rn + 1), Token(UNTILSYM, text.substr(rn, n - rn + 1), rr, rc)));
+					table.insert(pair<string, Token>(text.substr(rn, n - rn + 1), Token(UNTILSYM, text.substr(rn, n - rn + 1), rr, rc))));
 					tokens.push_back(Token(UNTILSYM, text.substr(rn, n - rn + 1), rr, rc));
+				}
+				(* ⭐ PL/0+ 新增 5 个关键字 *)
+				else if (revalue == "let")
+				{
+					table.insert(pair<string, Token>(text.substr(rn, n - rn + 1), Token(LETSYM, text.substr(rn, n - rn + 1), rr, rc))));
+					tokens.push_back(Token(LETSYM, text.substr(rn, n - rn + 1), rr, rc));
+				}
+				else if (revalue == "mut")
+				{
+					table.insert(pair<string, Token>(text.substr(rn, n - rn + 1), Token(MUTSYM, text.substr(rn, n - rn + 1), rr, rc))));
+					tokens.push_back(Token(MUTSYM, text.substr(rn, n - rn + 1), rr, rc));
+				}
+				else if (revalue == "i8")
+				{
+					table.insert(pair<string, Token>(text.substr(rn, n - rn + 1), Token(I8SYM, text.substr(rn, n - rn + 1), rr, rc))));
+					tokens.push_back(Token(I8SYM, text.substr(rn, n - rn + 1), rr, rc));
+				}
+				else if (revalue == "i16")
+				{
+					table.insert(pair<string, Token>(text.substr(rn, n - rn + 1), Token(I16SYM, text.substr(rn, n - rn + 1), rr, rc))));
+					tokens.push_back(Token(I16SYM, text.substr(rn, n - rn + 1), rr, rc));
+				}
+				else if (revalue == "i32")
+				{
+					table.insert(pair<string, Token>(text.substr(rn, n - rn + 1), Token(I32SYM, text.substr(rn, n - rn + 1), rr, rc))));
+					tokens.push_back(Token(I32SYM, text.substr(rn, n - rn + 1), rr, rc));
 				}
 				else
 				{
-					table.insert(pair<string, Token>(text.substr(rn, n - rn + 1), Token(ID, text.substr(rn, n - rn + 1), rr, rc)));
+					table.insert(pair<string, Token>(text.substr(rn, n - rn + 1), Token(ID, text.substr(rn, n - rn + 1), rr, rc))));
 					tokens.push_back(Token(ID, text.substr(rn, n - rn + 1), rr, rc));
 				}
 			}
@@ -312,9 +346,10 @@ Lexer::Lexer(string t)
 			}
 			else
 			{
-				/*table.insert(pair<string, Token>(":", Token(ERRORSYM, ":", r, c - 2)));
-				tokens.push_back(Token(ERRORSYM, ":", r, c - 2));*/
-				errorTokens.push_back(Token(ERRORSYM, ":", r, c - 2));
+				(* ⭐ PL/0+ 修改：单独 : 现在是合法 token COLONSYM（用于类型标注）*)
+				(* 不再放入 errorTokens *)
+				table.insert(pair<string, Token>(":", Token(COLONSYM, ":", r, c - 2)));
+				tokens.push_back(Token(COLONSYM, ":", r, c - 2));
 			}
 			break;
 		case LS:
@@ -400,6 +435,29 @@ Lexer::Lexer(string t)
 			table.insert(pair<string, Token>(".", Token(symbol::PERIODSYM, ".", r, c - 1)));
 			tokens.push_back(Token(symbol::PERIODSYM, ".", r, c - 1));
 			type = next();
+			break;
+		(* ⭐ PL/0+ 新增：AMP 状态处理（识别 & / &mut）*)
+		case state::AMP:
+			rr = r; rc = c - 1; rn = n - 1;
+			(* 前瞻 3 个字符判断是不是 "mut" *)
+			if (n + 2 < text.size() 
+				&& text[n] == 'm' && text[n+1] == 'u' && text[n+2] == 't'
+				&& (n+3 >= text.size() || !isalnum(text[n+3])))    (* maximal-munch 边界检查 *)
+			{
+				(* 消费 "mut" 三个字符 *)
+				n += 3;
+				c += 3;
+				table.insert(pair<string, Token>("&mut", Token(AMPMUTSYM, "&mut", rr, rc)));
+				tokens.push_back(Token(AMPMUTSYM, "&mut", rr, rc));
+				type = next();
+			}
+			else
+			{
+				(* 单 token & *)
+				table.insert(pair<string, Token>("&", Token(AMPSYM, "&", rr, rc)));
+				tokens.push_back(Token(AMPSYM, "&", rr, rc));
+				type = next();
+			}
 			break;
 		default:
 
