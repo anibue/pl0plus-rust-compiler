@@ -1,0 +1,17 @@
+release/lexer.o
+release/token.o
+release/position.o
+release/grammar.o
+release/grammarDefinition.o
+release/AstNode.o
+release/ErrorMessage.o
+release/symbolTable.o
+release/parser.o
+release/borrow_checker.o
+release/pch.o
+release/pl0vm.o
+release/main.o
+release/mainwindow.o
+release/codeeditor.o
+release/moc_mainwindow.o
+release/moc_codeeditor.o

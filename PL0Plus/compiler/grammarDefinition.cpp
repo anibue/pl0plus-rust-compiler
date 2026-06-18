@@ -3,7 +3,7 @@
 #include "grammarDefinition.h"
 
 
-string GrammarDefinition::GrammarSymTypes[95] =
+string GrammarDefinition::GrammarSymTypes[111] =
 {
 		"程序",
 		"分程序",
@@ -99,7 +99,7 @@ string GrammarDefinition::GrammarSymTypes[95] =
 		"*",
 		"/",
 		"ε",
-		(* ⭐ PL/0+ 新增非终结符 *)
+		// ⭐ PL/0+ 新增非终结符
 		"let声明",
 		"let声明(mut)",
 		"类型",
@@ -107,7 +107,7 @@ string GrammarDefinition::GrammarSymTypes[95] =
 		"引用类型",
 		"借用表达式",
 		"解引用表达式",
-		(* ⭐ PL/0+ 新增终结符 *)
+		// ⭐ PL/0+ 新增终结符
 		"let",
 		"mut",
 		"i8",

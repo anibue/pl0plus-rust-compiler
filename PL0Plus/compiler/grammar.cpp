@@ -103,16 +103,16 @@ void Grammar::getOriginGrammar()
 	grammarSet.push_back(GrammarDefinition(FACTOR, vector<int>{ID}));
 	grammarSet.push_back(GrammarDefinition(FACTOR, vector<int>{INTEGER}));
 	grammarSet.push_back(GrammarDefinition(FACTOR, vector<int>{LEFTPARENT, EXPRESSION, RIGHTPARENT}));
-	(* ⭐ PL/0+ 新增：借用表达式和解引用表达式 *)
+	// ⭐ PL/0+ 新增：借用表达式和解引用表达式
 	grammarSet.push_back(GrammarDefinition(FACTOR, vector<int>{BORROWEXPR}));
 	grammarSet.push_back(GrammarDefinition(FACTOR, vector<int>{DEREFEXPR}));
 	
-	(* ⭐ PL/0+ 新增：let 声明 *)
+	// ⭐ PL/0+ 新增：let 声明
 	grammarSet.push_back(GrammarDefinition(LETDECLARATION, vector<int>{LETSYM, LETDECLARATIONMUT}));
 	grammarSet.push_back(GrammarDefinition(LETDECLARATIONMUT, vector<int>{MUTSYM, ID, COLONSYM, TYPE, BECOMES, EXPRESSION, SEMICOLON}));
 	grammarSet.push_back(GrammarDefinition(LETDECLARATIONMUT, vector<int>{ID, COLONSYM, TYPE, BECOMES, EXPRESSION, SEMICOLON}));
 	
-	(* ⭐ PL/0+ 新增：类型定义 *)
+	// ⭐ PL/0+ 新增：类型定义
 	grammarSet.push_back(GrammarDefinition(TYPE, vector<int>{REFTYPE}));
 	grammarSet.push_back(GrammarDefinition(TYPE, vector<int>{BASICTYPE}));
 	grammarSet.push_back(GrammarDefinition(REFTYPE, vector<int>{AMPSYM, BASICTYPE}));
@@ -121,11 +121,11 @@ void Grammar::getOriginGrammar()
 	grammarSet.push_back(GrammarDefinition(BASICTYPE, vector<int>{I16SYM}));
 	grammarSet.push_back(GrammarDefinition(BASICTYPE, vector<int>{I32SYM}));
 	
-	(* ⭐ PL/0+ 新增：借用表达式 *)
+	// ⭐ PL/0+ 新增：借用表达式
 	grammarSet.push_back(GrammarDefinition(BORROWEXPR, vector<int>{AMPSYM, ID}));
 	grammarSet.push_back(GrammarDefinition(BORROWEXPR, vector<int>{AMPMUTSYM, ID}));
 	
-	(* ⭐ PL/0+ 新增：解引用表达式 *)
+	// ⭐ PL/0+ 新增：解引用表达式
 	grammarSet.push_back(GrammarDefinition(DEREFEXPR, vector<int>{STAR, ID}));
 	grammarSet.push_back(GrammarDefinition(DEREFEXPR, vector<int>{STAR, LEFTPARENT, EXPRESSION, RIGHTPARENT}));
 	
@@ -169,22 +169,22 @@ void Grammar::getOriginList()
 	grammarList.push_back(list< vector<int> >{vector<int>{WRITEEXPRESSIONTABLE}, vector<int>{WRITEEXPRESSIONTABLE, COMMA, EXPRESSION}, vector<int>{EXPRESSION}});
 	grammarList.push_back(list< vector<int> >{vector<int>{REPEATSTATEMENT}, vector<int>{REPEAT, STATEMENTTABLE, UNTIL, CONDITION }});
 	
-	(* ⭐ PL/0+ 新增：let 声明产生式 *)
+	// ⭐ PL/0+ 新增：let 声明产生式
 	grammarList.push_back(list< vector<int> >{vector<int>{LETDECLARATION}, vector<int>{LETSYM, LETDECLARATIONMUT}});
 	grammarList.push_back(list< vector<int> >{vector<int>{LETDECLARATIONMUT}, vector<int>{MUTSYM, ID, COLONSYM, TYPE, BECOMES, EXPRESSION, SEMICOLON}, vector<int>{ID, COLONSYM, TYPE, BECOMES, EXPRESSION, SEMICOLON}});
 	
-	(* ⭐ PL/0+ 新增：类型定义产生式 *)
+	// ⭐ PL/0+ 新增：类型定义产生式
 	grammarList.push_back(list< vector<int> >{vector<int>{TYPE}, vector<int>{REFTYPE}, vector<int>{BASICTYPE}});
 	grammarList.push_back(list< vector<int> >{vector<int>{REFTYPE}, vector<int>{AMPSYM, BASICTYPE}, vector<int>{AMPMUTSYM, BASICTYPE}});
 	grammarList.push_back(list< vector<int> >{vector<int>{BASICTYPE}, vector<int>{I8SYM}, vector<int>{I16SYM}, vector<int>{I32SYM}});
 	
-	(* ⭐ PL/0+ 新增：借用表达式产生式 *)
+	// ⭐ PL/0+ 新增：借用表达式产生式
 	grammarList.push_back(list< vector<int> >{vector<int>{BORROWEXPR}, vector<int>{AMPSYM, ID}, vector<int>{AMPMUTSYM, ID}});
 	
-	(* ⭐ PL/0+ 新增：解引用表达式产生式 *)
+	// ⭐ PL/0+ 新增：解引用表达式产生式
 	grammarList.push_back(list< vector<int> >{vector<int>{DEREFEXPR}, vector<int>{STAR, ID}, vector<int>{STAR, LEFTPARENT, EXPRESSION, RIGHTPARENT}});
 	
-	(* ⭐ PL/0+ 新增：FACTOR 扩展 *)
+	// ⭐ PL/0+ 新增：FACTOR 扩展
 	grammarList.push_back(list< vector<int> >{vector<int>{FACTOR}, vector<int>{ID}, vector<int>{INTEGER}, vector<int>{LEFTPARENT, EXPRESSION, RIGHTPARENT}, vector<int>{BORROWEXPR}, vector<int>{DEREFEXPR}});
 	
 	

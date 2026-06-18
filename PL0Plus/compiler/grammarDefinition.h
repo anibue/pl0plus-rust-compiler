@@ -34,14 +34,14 @@ namespace GrammarSymSpace
 		READSTATEMENT,
 		WRITESTATEMENT,
 		REPEATSTATEMENT,
-		(* ⭐ PL/0+ 新增语法符号 *)
-		LETDECLARATION,            (* let [mut] ident : type = expr ; *)
-		LETDECLARATIONMUT,         (* let mut ... *)
-		TYPE,                      (* i8 | i16 | i32 | & T | &mut T *)
-		BASICTYPE,                 (* i8 | i16 | i32 *)
-		REFTYPE,                   (* & T | &mut T *)
-		BORROWEXPR,                (* & ident | &mut ident *)
-		DEREFEXPR,                 (* * ident | * ( expr ) *)
+		// ⭐ PL/0+ 新增语法符号
+		LETDECLARATION,            // let [mut] ident : type = expr ;
+		LETDECLARATIONMUT,         // let mut ...
+		TYPE,                      // i8 | i16 | i32 | & T | &mut T
+		BASICTYPE,                 // i8 | i16 | i32
+		REFTYPE,                   // & T | &mut T
+		BORROWEXPR,                // & ident | &mut ident
+		DEREFEXPR,                 // * ident | * ( expr )
 		STATEMENTTABLE,
 		READVARTABLE,
 		READVAR,
@@ -110,9 +110,9 @@ namespace GrammarSymSpace
 		LESSEQUAL,
 		GREATERTHAN,
 		GREATEREQUAL,
-		(* ⭐ PL/0+ 新增 Token (终结符) *)
+		// ⭐ PL/0+ 新增 Token (终结符)
 		LETSYM, MUTSYM, I8SYM, I16SYM, I32SYM, AMPSYM, AMPMUTSYM, COLONSYM,
-		STAR,    (* ⭐ * 也作为终结符（用于 derefExpr） *)
+		STAR,    // ⭐ * 也作为终结符（用于 derefExpr）
 		PLUS,
 		MINUS,
 		TIMES,
@@ -130,7 +130,7 @@ private:
 	vector<int> rightpart;
 	//static string GrammarSymTypes[87];
 public:
-	static string GrammarSymTypes[111];    (* ⭐ PL/0+ 扩展：95 → 111 *)
+	static string GrammarSymTypes[111];    // ⭐ PL/0+ 扩展：95 → 111
 	//GrammarDefinition();
 	//GrammarDefinition(int left);
 	GrammarDefinition(int left, vector<int>right);

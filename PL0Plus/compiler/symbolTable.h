@@ -7,6 +7,7 @@
 #include<iostream>
 #include<map>
 #include<vector>
+#include<stack>
 
 #define inf 0x3f3f3f;
 
@@ -135,12 +136,13 @@ class RustSymbolTable {
 private:
 	vector<Symbol> symbols;
 	int current_scope_level;  // ⭐ 新增：当前作用域层级
-	stack<SymbolSnapshot> snapshot_stack;  // ⭐ 新增：快照栈
 
 	struct SymbolSnapshot {
 		vector<Symbol> symbols_copy;
 		int scope_level_copy;
 	};
+
+	std::stack<SymbolSnapshot> snapshot_stack;  // ⭐ 新增：快照栈
 
 public:
 	RustSymbolTable() : current_scope_level(0) {}

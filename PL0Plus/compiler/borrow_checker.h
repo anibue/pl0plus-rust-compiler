@@ -27,12 +27,13 @@ private:
 	RustSymbolTable* sym_table;
 	vector<BorrowRecord> records;
 	int current_scope_level;
-	stack<Snapshot> snapshot_stack;
 
 	struct Snapshot {
 		vector<BorrowRecord> records_copy;
 		int scope_level_copy;
 	};
+
+	stack<Snapshot> snapshot_stack;
 
 public:
 	BorrowTracker(RustSymbolTable* st) : sym_table(st), current_scope_level(0) {}

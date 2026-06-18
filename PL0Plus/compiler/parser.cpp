@@ -883,7 +883,7 @@ int Parser::lexerTypeToGrammarType(Token g)
 	case symbol::UNTILSYM:
 		return GrammarSym::UNTIL;
 	
-	(* ⭐ PL/0+ 新增 8 个 Token 映射 *)
+	// ⭐ PL/0+ 新增 8 个 Token 映射
 	case symbol::LETSYM:
 		return GrammarSym::LETSYM;
 	case symbol::MUTSYM:
@@ -1823,7 +1823,7 @@ bool Parser::errorEmpty()
 	return errorList.empty();
 }
 
-(* ⭐ PL/0+ 新增方法实现 *)
+// ⭐ PL/0+ 新增方法实现
 
 void Parser::handleLetDeclaration(AstNode* n, sTable* s) {
 	AstNode* currentNode = n;
@@ -1841,20 +1841,20 @@ void Parser::handleType(string& outType, bool& isRef, bool& isMutRef) {
 	isRef = false;
 	isMutRef = false;
 	
-	if (currentToekn.getType() == AMPSYM || currentToekn.getType() == AMPMUTSYM) {
+	if (currentToekn.getType() == symbol::AMPSYM || currentToekn.getType() == symbol::AMPMUTSYM) {
 		isRef = true;
-		isMutRef = (currentToekn.getType() == AMPMUTSYM);
+		isMutRef = (currentToekn.getType() == symbol::AMPMUTSYM);
 	}
 	
-	if (currentToekn.getType() == I8SYM) { outType = "i8"; }
-	else if (currentToekn.getType() == I16SYM) { outType = "i16"; }
-	else if (currentToekn.getType() == I32SYM) { outType = "i32"; }
+	if (currentToekn.getType() == symbol::I8SYM) { outType = "i8"; }
+	else if (currentToekn.getType() == symbol::I16SYM) { outType = "i16"; }
+	else if (currentToekn.getType() == symbol::I32SYM) { outType = "i32"; }
 }
 
 void Parser::handleBorrowExpr(AstNode* n, sTable* s) {
 	// & ident 或 &mut ident
 	// 生成 LEA 指令：取变量地址
-	bool is_mut = (currentToekn.getType() == AMPMUTSYM);
+	bool is_mut = (currentToekn.getType() == symbol::AMPMUTSYM);
 	
 	string name = currentToekn.getVal();
 	
@@ -1872,7 +1872,7 @@ void Parser::handleBorrowExpr(AstNode* n, sTable* s) {
 void Parser::handleDerefExpr(AstNode* n, sTable* s) {
 	// * ident 或 * ( expr )
 	// 生成 LODI 指令：间接取值
-	if (currentToekn.getType() == ID) {
+	if (currentToekn.getType() == symbol::ID) {
 		string name = currentToekn.getVal();
 		// 查找变量地址（这个变量存储的是引用）
 		pos varPos = s->findVar(name);
@@ -1884,7 +1884,7 @@ void Parser::handleDerefExpr(AstNode* n, sTable* s) {
 		pcode.push_back(pCode("LODI", 0, 0));
 		
 		// 检查 name 是否是引用类型（简化版）
-	} else if (currentToekn.getType() == LPARENSYM) {
+	} else if (currentToekn.getType() == symbol::LPARENSYM) {
 		// * ( expr )：先解析表达式，再生成 LODI
 		// 解析 expression
 		handleExpression(n, s);
