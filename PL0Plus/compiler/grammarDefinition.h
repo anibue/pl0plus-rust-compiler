@@ -130,7 +130,7 @@ private:
 	vector<int> rightpart;
 	//static string GrammarSymTypes[87];
 public:
-	static string GrammarSymTypes[95];
+	static string GrammarSymTypes[111];    (* ⭐ PL/0+ 扩展：95 → 111 *)
 	//GrammarDefinition();
 	//GrammarDefinition(int left);
 	GrammarDefinition(int left, vector<int>right);

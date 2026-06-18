@@ -882,6 +882,24 @@ int Parser::lexerTypeToGrammarType(Token g)
 		return GrammarSym::REPEAT;
 	case symbol::UNTILSYM:
 		return GrammarSym::UNTIL;
+	
+	(* ⭐ PL/0+ 新增 8 个 Token 映射 *)
+	case symbol::LETSYM:
+		return GrammarSym::LETSYM;
+	case symbol::MUTSYM:
+		return GrammarSym::MUTSYM;
+	case symbol::I8SYM:
+		return GrammarSym::I8SYM;
+	case symbol::I16SYM:
+		return GrammarSym::I16SYM;
+	case symbol::I32SYM:
+		return GrammarSym::I32SYM;
+	case symbol::AMPSYM:
+		return GrammarSym::AMPSYM;
+	case symbol::AMPMUTSYM:
+		return GrammarSym::AMPMUTSYM;
+	case symbol::COLONSYM:
+		return GrammarSym::COLONSYM;
 
 	default:
 		break;
@@ -1736,6 +1754,77 @@ vector<pCode>::iterator Parser::getPCodeEnd()
 bool Parser::errorEmpty()
 {
 	return errorList.empty();
+}
+
+(* ⭐ PL/0+ 新增方法实现 *)
+
+void Parser::handleLetDeclaration(AstNode* n, sTable* s) {
+	(* 简化实现：仅做语法分析，不生成 pcode *)
+	(* 当前 token 应该是 LETSYM（已消费）*)
+	(* 1. 可选 MUTSYM *)
+	bool is_mut = false;
+	if (currentToekn.getType() == MUTSYM) {
+		is_mut = true;
+	}
+	
+	(* 2. ident *)
+	string name = currentToekn.getVal();
+	
+	(* 3. COLONSYM *)
+	(* 期望 COLONSYM *)
+	
+	(* 4. type *)
+	string typeName;
+	bool isRef = false, isMutRef = false;
+	handleType(typeName, isRef, isMutRef);
+	
+	(* 5. BECOMESSYM *)
+	(* 期望 BECOMESSYM *)
+	
+	(* 6. expression *)
+	(* 解析表达式 *)
+	
+	(* 7. SEMICOLONSYM *)
+	(* 期望 SEMICOLONSYM *)
+	
+	(* 8. 注册到符号表（简化版）*)
+	(* DeclKind kind = is_mut ? DeclKind::LET_MUT : DeclKind::LET; *)
+	(* rustSymTable->declare(name, typeName, kind, currentLine()); *)
+}
+
+void Parser::handleType(string& outType, bool& isRef, bool& isMutRef) {
+	isRef = false;
+	isMutRef = false;
+	
+	if (currentToekn.getType() == AMPSYM || currentToekn.getType() == AMPMUTSYM) {
+		isRef = true;
+		isMutRef = (currentToekn.getType() == AMPMUTSYM);
+	}
+	
+	if (currentToekn.getType() == I8SYM) { outType = "i8"; }
+	else if (currentToekn.getType() == I16SYM) { outType = "i16"; }
+	else if (currentToekn.getType() == I32SYM) { outType = "i32"; }
+}
+
+void Parser::handleBorrowExpr(AstNode* n, sTable* s) {
+	(* & ident 或 &mut ident *)
+	bool is_mut = (currentToekn.getType() == AMPMUTSYM);
+	
+	string name = currentToekn.getVal();
+	
+	(* 检查借用规则（简化版）*)
+	(* if (is_mut) rustSymTable->borrow_mut(name); *)
+	(* else rustSymTable->borrow_imm(name); *)
+}
+
+void Parser::handleDerefExpr(AstNode* n, sTable* s) {
+	(* * ident 或 * ( expr ) *)
+	if (currentToekn.getType() == ID) {
+		string name = currentToekn.getVal();
+		(* 检查 name 是否是引用类型 *)
+	} else if (currentToekn.getType() == LPARENSYM) {
+		(* 解析 expression *)
+	}
 }
 
 

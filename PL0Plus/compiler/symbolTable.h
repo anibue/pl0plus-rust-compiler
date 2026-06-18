@@ -94,15 +94,14 @@ public:
 	int getVarSize();
 };
 
-(* ⭐ PL/0+ 新增：Rust 风格符号表 *)
 enum class DeclKind {
-	CONST,    // const x = 5;       — 不可变，立即初始化，不可借
-	VAR,      // var x;             — 可变，不要求初始化，不可借
-	LET,      // let x: i32 = 5;    — 不可变，立即初始化，可借 &
-	LET_MUT,  // let mut x: i32 = 5; — 可变，立即初始化，可借 &mut
+	CONST,    // const x = 5;       - 不可变，立即初始化，不可借
+	VAR,      // var x;             - 可变，不要求初始化，不可借
+	LET,      // let x: i32 = 5;    - 不可变，立即初始化，可借 &
+	LET_MUT   // let mut x: i32 = 5; - 可变，立即初始化，可借 &mut
 };
 
-struct RustSymbol {
+struct Symbol {
 	string name;
 	string type;                  // "i8" | "i16" | "i32" | "&i32" | "&mut i32" | "integer"
 	int    addr;                  // 栈地址
@@ -114,16 +113,16 @@ struct RustSymbol {
 	int    borrow_count_imm;      // 不可变借用计数
 	int    borrow_count_mut;      // 可变借用计数
 
-	RustSymbol() : addr(0), scope_level(0), decl_line(0),
+	Symbol() : addr(0), scope_level(0), decl_line(0),
 		first_assign_line(-1), is_initialized(false),
 		decl_kind(DeclKind::VAR), borrow_count_imm(0), borrow_count_mut(0) {}
 
-	RustSymbol(string n, string t, int a, int lvl, int line, DeclKind k)
+	Symbol(string n, string t, int a, int lvl, int line, DeclKind k)
 		: name(n), type(t), addr(a), scope_level(lvl), decl_line(line),
 		first_assign_line(-1), is_initialized(false), decl_kind(k),
 		borrow_count_imm(0), borrow_count_mut(0) {}
 
-	(* 派生属性，不存状态 *)
+	// 派生属性，不存状态
 	bool is_mutable() const {
 		return decl_kind == DeclKind::VAR || decl_kind == DeclKind::LET_MUT;
 	}
@@ -134,11 +133,11 @@ struct RustSymbol {
 
 class RustSymbolTable {
 private:
-	vector<RustSymbol> symbols;
+	vector<Symbol> symbols;
 public:
 	RustSymbolTable() {}
 	void declare(string name, string type, DeclKind kind, int line);
-	RustSymbol* lookup(string name);
+	Symbol* lookup(string name);
 	bool exists(string name) const;
 	void assign(string name, int line);
 	void enter_scope();
@@ -150,7 +149,9 @@ public:
 	void printTable();
 };
 
-(* ⭐ 错误码常量 *)
+using RustSymbol = Symbol;
+
+// 错误码常量
 namespace ErrCode {
 	const char* const E0001 = "E0001";  // 未声明标识符
 	const char* const E0002 = "E0002";  // 重复声明

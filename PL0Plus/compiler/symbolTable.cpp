@@ -230,20 +230,18 @@ int sTable::getVarSize()
 	return v.size();
 }
 
-(* ⭐ PL/0+ 新增：RustSymbolTable 实现 *)
-
 void RustSymbolTable::declare(string name, string type, DeclKind kind, int line) {
-	(* 检查重复声明 *)
+	// 检查重复声明
 	for (const auto& s : symbols) {
 		if (s.name == name) {
 			return;  // E0002 重复声明
 		}
 	}
 	int next_addr = symbols.size();
-	symbols.push_back(RustSymbol(name, type, next_addr, 0, line, kind));
+	symbols.push_back(Symbol(name, type, next_addr, 0, line, kind));
 }
 
-RustSymbol* RustSymbolTable::lookup(string name) {
+Symbol* RustSymbolTable::lookup(string name) {
 	for (auto& s : symbols) {
 		if (s.name == name) {
 			return &s;
@@ -260,7 +258,7 @@ bool RustSymbolTable::exists(string name) const {
 }
 
 void RustSymbolTable::assign(string name, int line) {
-	RustSymbol* s = lookup(name);
+	Symbol* s = lookup(name);
 	if (s) {
 		if (!s->is_initialized) {
 			s->first_assign_line = line;
@@ -276,8 +274,8 @@ void RustSymbolTable::enter_scope() {
 }
 
 void RustSymbolTable::exit_scope(int scope_level) {
-	(* 移除该层的所有符号，递减借用的 owner 的计数 *)
-	vector<RustSymbol> remaining;
+	// 移除该层的所有符号，递减借用的 owner 的计数
+	vector<Symbol> remaining;
 	for (auto& s : symbols) {
 		if (s.scope_level == scope_level) {
 			continue;  // 离开作用域，丢弃
@@ -288,17 +286,17 @@ void RustSymbolTable::exit_scope(int scope_level) {
 }
 
 void RustSymbolTable::borrow_imm(string name) {
-	RustSymbol* s = lookup(name);
+	Symbol* s = lookup(name);
 	if (s) s->borrow_count_imm++;
 }
 
 void RustSymbolTable::borrow_mut(string name) {
-	RustSymbol* s = lookup(name);
+	Symbol* s = lookup(name);
 	if (s) s->borrow_count_mut++;
 }
 
 void RustSymbolTable::release_borrows(string name) {
-	RustSymbol* s = lookup(name);
+	Symbol* s = lookup(name);
 	if (s) {
 		s->borrow_count_imm = 0;
 		s->borrow_count_mut = 0;
