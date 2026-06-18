@@ -1,0 +1,10 @@
+(* T8: 重复-直到循环 *)
+PROGRAM T08;
+VAR N;
+BEGIN
+  N := 10;
+  REPEAT
+    WRITE(N);
+    N := N - 1
+  UNTIL N = 0
+END.

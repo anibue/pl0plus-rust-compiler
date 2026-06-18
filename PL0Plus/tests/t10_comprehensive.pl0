@@ -1,0 +1,24 @@
+(* T10: 综合测试 - 包含所有 PL/0 特性 *)
+PROGRAM T10;
+CONST LIMIT = 50;
+VAR I, TOTAL, IS_EVEN;
+PROCEDURE DOUBLE;
+  VAR RESULT;
+  BEGIN
+    RESULT := I * 2;
+    WRITE(RESULT)
+  END;
+BEGIN
+  I := 0;
+  TOTAL := 0;
+  IS_EVEN := 0;
+  WHILE I < LIMIT DO
+  BEGIN
+    IF ODD I = 0 THEN
+      IS_EVEN := 1;
+    TOTAL := TOTAL + I;
+    I := I + 1
+  END;
+  CALL DOUBLE;
+  WRITE(TOTAL)
+END.

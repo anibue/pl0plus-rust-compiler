@@ -1,0 +1,14 @@
+(* T9: 嵌套 if *)
+PROGRAM T09;
+VAR X, Y;
+BEGIN
+  X := READ;
+  Y := READ;
+  IF X > 0 THEN
+    IF Y > 0 THEN
+      WRITE(X + Y)
+    ELSE
+      WRITE(X)
+  ELSE
+    WRITE(0)
+END.

@@ -1,0 +1,10 @@
+(* T5: 简单表达式 — 兼容性测试 *)
+PROGRAM T05;
+VAR A, B, C, D;
+BEGIN
+  A := 5;
+  B := 10;
+  C := A + B;
+  D := A * B + C;
+  WRITE(D)
+END.

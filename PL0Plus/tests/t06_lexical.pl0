@@ -1,0 +1,12 @@
+(* T6: 词法测试 - 等同 test1.pl0 的子集 *)
+{ PL/0+ 词法层测试 }
+PROGRAM T06;
+VAR X;
+BEGIN
+  X := 32767;
+  WRITE(X);
+  IF X = 32767 THEN
+    WRITE(1)
+  ELSE
+    WRITE(0)
+END.

@@ -79,6 +79,11 @@ public:
 	void handleRepeatStatement(AstNode* n, sTable* s);
 	void handleStatementTable(AstNode* n, sTable* s);
 	void handleStatementTablePlus(AstNode* n, sTable* s);
+	(* ⭐ PL/0+ 新增：let 声明、类型、借用、解引用处理 *)
+	void handleLetDeclaration(AstNode* n, sTable* s);
+	void handleType(string& outType, bool& isRef, bool& isMutRef);
+	void handleBorrowExpr(AstNode* n, sTable* s);
+	void handleDerefExpr(AstNode* n, sTable* s);
 	void printPCode();
 
 	list<list<vector<int> > >::iterator getGrammarList();

@@ -1,0 +1,10 @@
+(* T4: PL/0 if-then-else — 兼容性测试 *)
+PROGRAM T04;
+VAR X;
+BEGIN
+  X := READ;
+  IF X > 0 THEN
+    WRITE(X)
+  ELSE
+    WRITE(0)
+END.

@@ -1,0 +1,14 @@
+(* T7-T10: 完整 PL/0 程序组合 *)
+PROGRAM T07;
+CONST MAX = 100;
+VAR I, S;
+BEGIN
+  I := 0;
+  S := 0;
+  WHILE I < MAX DO
+  BEGIN
+    S := S + I;
+    I := I + 1
+  END;
+  WRITE(S)
+END.

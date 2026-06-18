@@ -1,0 +1,13 @@
+(* T2: PL/0 经典 while 循环 — 兼容性测试 *)
+PROGRAM T02;
+VAR X, SUM;
+BEGIN
+  X := 1;
+  SUM := 0;
+  WHILE X <= 10 DO
+  BEGIN
+    SUM := SUM + X;
+    X := X + 1
+  END;
+  WRITE(SUM)
+END.

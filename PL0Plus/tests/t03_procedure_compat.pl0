@@ -1,0 +1,14 @@
+(* T3: PL/0 嵌套过程 — 兼容性测试 *)
+PROGRAM T03;
+VAR GLOBAL;
+PROCEDURE P1;
+  VAR LOCAL;
+  BEGIN
+    LOCAL := 100;
+    GLOBAL := LOCAL * 2
+  END;
+BEGIN
+  GLOBAL := 0;
+  CALL P1;
+  WRITE(GLOBAL)
+END.
