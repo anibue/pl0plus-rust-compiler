@@ -1479,10 +1479,34 @@ void Parser::handleAssignStatement(AstNode * n, sTable * s)
 {
 	AstNode* currentNode = n;
 	sTable* currentTable = s;
-	currentNode = currentNode->child[2];
-	handleExpression(currentNode, currentTable);
-	pos tmp = currentTable->findVar(currentNode->getFather()->child[0]->getInfo());
-	pcode.push_back(pCode("STO", tmp.pre, tmp.off));
+	
+	// 检查是否是解引用赋值：*m := val
+	AstNode* lvalueNode = currentNode->child[0];
+	if (lvalueNode->getType() == GrammarSymSpace::DEREFEXPR) {
+		// *m := val：生成 STOI 指令
+		// 先解析右侧表达式
+		currentNode = currentNode->child[2];
+		handleExpression(currentNode, currentTable);
+		
+		// 解析左侧的引用变量（*m 中的 m）
+		AstNode* refNode = lvalueNode->child[0];
+		if (refNode->getType() == GrammarSymSpace::ID) {
+			string refName = refNode->getInfo();
+			pos refPos = currentTable->findVar(refName);
+			
+			// 加载引用的地址
+			pcode.push_back(pCode("LOD", refPos.pre, refPos.off));
+			
+			// 生成 STOI 指令：间接存值（pop val，pop addr，mem[addr] = val）
+			pcode.push_back(pCode("STOI", 0, 0));
+		}
+	} else {
+		// 普通赋值：x := val
+		currentNode = currentNode->child[2];
+		handleExpression(currentNode, currentTable);
+		pos tmp = currentTable->findVar(currentNode->getFather()->child[0]->getInfo());
+		pcode.push_back(pCode("STO", tmp.pre, tmp.off));
+	}
 }
 
 void Parser::handleCallStatement(AstNode * n, sTable * s)
@@ -1793,23 +1817,45 @@ void Parser::handleType(string& outType, bool& isRef, bool& isMutRef) {
 }
 
 void Parser::handleBorrowExpr(AstNode* n, sTable* s) {
-	(* & ident 或 &mut ident *)
+	// & ident 或 &mut ident
+	// 生成 LEA 指令：取变量地址
 	bool is_mut = (currentToekn.getType() == AMPMUTSYM);
 	
 	string name = currentToekn.getVal();
 	
-	(* 检查借用规则（简化版）*)
-	(* if (is_mut) rustSymTable->borrow_mut(name); *)
-	(* else rustSymTable->borrow_imm(name); *)
+	// 查找变量地址
+	pos varPos = s->findVar(name);
+	
+	// 生成 LEA 指令：压入 base + A（变量地址）
+	pcode.push_back(pCode("LEA", varPos.pre, varPos.off));
+	
+	// 检查借用规则（简化版）
+	// if (is_mut) rustSymTable->borrow_mut(name);
+	// else rustSymTable->borrow_imm(name);
 }
 
 void Parser::handleDerefExpr(AstNode* n, sTable* s) {
-	(* * ident 或 * ( expr ) *)
+	// * ident 或 * ( expr )
+	// 生成 LODI 指令：间接取值
 	if (currentToekn.getType() == ID) {
 		string name = currentToekn.getVal();
-		(* 检查 name 是否是引用类型 *)
+		// 查找变量地址（这个变量存储的是引用）
+		pos varPos = s->findVar(name);
+		
+		// 先加载引用的地址
+		pcode.push_back(pCode("LOD", varPos.pre, varPos.off));
+		
+		// 生成 LODI 指令：间接取值（pop addr，push mem[addr]）
+		pcode.push_back(pCode("LODI", 0, 0));
+		
+		// 检查 name 是否是引用类型（简化版）
 	} else if (currentToekn.getType() == LPARENSYM) {
-		(* 解析 expression *)
+		// * ( expr )：先解析表达式，再生成 LODI
+		// 解析 expression
+		handleExpression(n, s);
+		
+		// 生成 LODI 指令：间接取值
+		pcode.push_back(pCode("LODI", 0, 0));
 	}
 }
 
