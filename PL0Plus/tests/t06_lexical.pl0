@@ -1,5 +1,3 @@
-(* T6: 词法测试 - 等同 test1.pl0 的子集 *)
-{ PL/0+ 词法层测试 }
 PROGRAM T06;
 VAR X;
 BEGIN

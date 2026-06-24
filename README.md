@@ -1,15 +1,19 @@
-# Rust 编译器课程设计 — PL/0+ 项目
-
-> **课程：** 编译原理课程设计  
-> **学生：** xwmsu  
-> **完成日期：** 2026-06-18  
-> **项目状态：** ✅ 已完成
+# Rust 编译器课程设计 — 项目总览
 
 ---
 
 ## 📚 项目概述
 
-本项目将 PL/0 编译器改造为支持 Rust 风格特性的 **PL/0+** 编译器，实现了：
+本项目将 PL/0 编译器改造为支持 Rust 风格特性的 **PL/0+** 编译器。
+
+### 课程设计必做内容
+
+| 内容 | 说明 | 状态 |
+|------|------|------|
+| **内容 2** | Rust if 条件语句的词法/语法分析 | ✅ 完成 |
+| **内容 3** | PL/0 改造与 Rust 特性实现 | ✅ 完成 |
+
+### 实现的 Rust 特性
 
 - ✅ **类型系统**：i8/i16/i32 + 引用类型（&T, &mut T）
 - ✅ **借用检查**：5 条核心规则（Rule 0-4）
@@ -19,35 +23,40 @@
 
 ---
 
-## 📁 目录结构
+## 📂 目录结构
 
 ```
 E:\rust_com\
 ├── README.md                          # 本文件（项目总览）
-├── INDEX.md                           # 资料下载索引
+├── INDEX.md                           # 文件索引
 ├── .gitignore                         # Git 忽略规则
 │
 ├── PL0Plus/                           # ⭐ 最终项目（PL/0+ 编译器）
-│   ├── README.md                      # PL0Plus 项目说明
-│   ├── application.pro                # Qt 工程文件
-│   ├── compiler/                      # 编译器核心
-│   ├── vm/                            # 虚拟机
-│   ├── ui/                            # Qt GUI
-│   ├── tests/                         # 测试用例
-│   └── docs/                          # 文档与报告
+│   ├── compiler/                     # 编译器核心
+│   ├── vm/                           # 虚拟机
+│   ├── ui/                           # Qt GUI
+│   ├── tests/                         # 测试用例 + 测试程序源码
+│   ├── bin/                          # 编译好的可执行文件
+│   └── docs/                         # 文档与报告
 │
 ├── docs/                              # 设计文档
+│   ├── README.md
 │   └── superpowers/specs/             # Spec 与 PRD
 │
-├── mrustc/                            # 🌟 C++ 版 Rust 编译器（主参考）
-├── rust/                              # 🦀 rustc 官方编译器源码
-├── gccrs/                             # 🔧 GCC 的 Rust 前端
-├── rustc_codegen_gcc/                 # 🔧 rustc 的 GCC 后端
+├── reference/                         # 📚 参考资料（只读）
+│   ├── README.md                      # 参考资料目录说明
+│   ├── pl0-impls/                    # PL/0 编译器实现（4 个版本）
+│   │   ├── PL0_compiler_with_LL1_and_QT/  # ⭐ 基线源码
+│   │   ├── PL0/                      # 南航版
+│   │   ├── PL-0-Compiler/             # LLVM 版
+│   │   └── pl0-QT版可运行程序/        # QT 可执行版
+│   └── rust-compilers/               # Rust 编译器实现（4 个）
+│       ├── mrustc/                   # 🌟 C++ 版（主参考）
+│       ├── rust/                      # 🦀 官方 rustc
+│       ├── gccrs/                    # 🔧 GCC 的 Rust 前端
+│       └── rustc_codegen_gcc/        # 🔧 rustc 的 GCC 后端
 │
-├── PL0_compiler_with_LL1_and_QT/      # 📋 PL/0 基线源码
-├── PL0/                               # 📋 南航版 PL/0
-├── PL-0-Compiler/                     # 📋 LLVM 版 PL/0
-└── pl0-QT版可运行程序/                # 📋 PL/0 可执行程序
+└── pl0_qt.rar                         # ⚠️ 旧下载文件（建议删除）
 ```
 
 ---
@@ -56,23 +65,15 @@ E:\rust_com\
 
 ### 内容 2：Rust if 条件语句的词法/语法分析
 
-**报告位置**：`PL0Plus/docs/report/content-2-rust-if-analysis.md`
-
-**主要内容**：
-- 词法分析原理（有限状态机、maximal-munch）
-- 语法分析原理（LL(1) 预测分析）
-- mrustc 词法/语法层参考实现
-- PL/0+ if 语句 EBNF 文法
+**报告**：`PL0Plus/docs/report/content-2-rust-if-analysis.md`
 
 ### 内容 3：PL/0 改造与 Rust 特性实现
 
-**报告位置**：`PL0Plus/docs/report/final-report.md`
-
 **分章报告**：
-- W1 报告：`PL0Plus/docs/report/content-2-rust-if-analysis.md`
-- **W2 报告**：`PL0Plus/docs/report/content-3-lexer-grammar.md` ⭐
-- W3 报告：`PL0Plus/docs/report/content-3-borrow-checker.md`
-- W4 报告：`PL0Plus/docs/report/content-3-pcode-vm.md`
+- **W2 报告**：`PL0Plus/docs/report/content-3-lexer-grammar.md` — 词法/语法扩展
+- **W3 报告**：`PL0Plus/docs/report/content-3-borrow-checker.md` — 借用检查器
+- **W4 报告**：`PL0Plus/docs/report/content-3-pcode-vm.md` — pcode/VM
+- **最终报告**：`PL0Plus/docs/report/final-report.md` — 整合所有内容
 
 ---
 
@@ -93,64 +94,48 @@ E:\rust_com\
 ### 查看最终报告
 
 ```bash
-cd E:\rust_com\PL0Plus\docs\report
+cd PL0Plus/docs/report
 cat final-report.md
-```
-
-### 查看设计文档
-
-```bash
-# 查看 Spec（技术设计）
-cat E:\rust_com\docs\superpowers\specs\2026-06-17-pl0-rust-compiler-spec.md
-
-# 查看 PRD（产品需求）
-cat E:\rust_com\docs\superpowers\specs\2026-06-17-pl0-rust-compiler-prd.md
 ```
 
 ### 运行测试
 
 ```bash
-cd E:\rust_com\PL0Plus
-./test_compiler.exe tests/t01_basic_compat.pl0
+cd PL0Plus
+./bin/test_compiler.exe tests/t01_basic_compat.pl0
+```
+
+### 编译项目（需要 Qt）
+
+```bash
+cd PL0Plus
+qmake application.pro
+make
 ```
 
 ---
 
-## 🔍 关键文件路径
+## 🔍 参考资料说明
 
-### PL0Plus 编译器核心
+> ⚠️ `reference/` 下所有目录是课程参考资料，**只读不要修改**。
 
-```
-E:\rust_com\PL0Plus\compiler\
-├── lexer.h/cpp              # 词法分析器（+8 Token）
-├── parser.h/cpp             # 语法分析器（LL(1)）
-├── grammar.h/cpp            # 文法定义（+16 产生式）
-├── grammarDefinition.h/cpp  # 文法符号定义
-├── symbolTable.h/cpp        # 符号表管理
-├── borrow_checker.h/cpp     # ⭐ 借用检查器（新增）
-├── AstNode.h/cpp            # AST 节点
-├── token.h/cpp              # Token 定义
-└── ErrorMessage.h/cpp       # 错误处理
-```
+### PL/0 实现
 
-### PL0Plus 虚拟机
+| 目录 | 说明 | 用途 |
+|------|------|------|
+| `reference/pl0-impls/PL0_compiler_with_LL1_and_QT/` | PL/0 + LL(1) + Qt | ⭐ 基线源码，本项目在此基础上改造 |
+| `reference/pl0-impls/PL0/` | 南航版 PL/0 | C++ 实现参考 |
+| `reference/pl0-impls/PL-0-Compiler/` | LLVM 版 PL/0 | LLVM IR 代码生成参考 |
+| `reference/pl0-impls/pl0-QT版可运行程序/` | QT 可执行版 | PL/0 可执行程序 |
 
-```
-E:\rust_com\PL0Plus\vm\
-├── instruction.h            # 指令定义（12 条）
-├── stack.h                  # 栈实现
-└── pl0vm.h/cpp              # ⭐ 虚拟机实现（新增）
-```
+### Rust 编译器
 
-### 参考编译器
-
-```
-E:\rust_com\mrustc\src\parse\
-├── lex.cpp                  # ⭐ 词法分析器（C++）
-├── token.cpp                # Token 定义
-├── root.cpp                 # ⭐ 语法分析器
-└── expr.cpp                 # 表达式解析
-```
+| 目录 | 说明 | 用途 |
+|------|------|------|
+| `reference/rust-compilers/mrustc/` | 🌟 C++ 版 Rust 编译器 | **主参考**，用 C++ 写成 |
+| `reference/rust-compilers/rust/` | 🦀 rustc 官方编译器 | 工业级实现参考 |
+| `reference/rust-compilers/gccrs/` | 🔧 GCC 的 Rust 前端 | GCC 生态集成参考 |
+| `reference/rust-compilers/rustc_codegen_gcc/` | 🔧 rustc 的 GCC 后端 | 后端代码生成参考 |
 
 ---
 
@@ -160,12 +145,12 @@ E:\rust_com\mrustc\src\parse\
 
 1. **最终报告**：`PL0Plus/docs/report/final-report.md`
 2. **Spec 文档**：`docs/superpowers/specs/2026-06-17-pl0-rust-compiler-spec.md`
-3. **mrustc 源码**：`mrustc/src/parse/`（C++ 实现参考）
+3. **mrustc 源码**：`reference/rust-compilers/mrustc/src/parse/`
 
 ### 选读
 
 - 《编译原理》（龙书）- 理论基础
-- [Rust Reference](https://doc.rust-lang.org/reference/) - Rust 语言规范
+- [Rust Reference](https://doc.rust-lang.org/reference/)
 - rustc 官方文档：https://rustc-dev-guide.rust-lang.org/
 
 ---
@@ -176,18 +161,9 @@ E:\rust_com\mrustc\src\parse\
 2. **作用域管理**：支持块级、过程级、分支级作用域
 3. **RAII 自动释放**：借用离开作用域自动释放
 4. **快照/回滚**：语句级别错误恢复
-5. **精确错误报告**：14 个错误码，精确定位问题
+5. **精确错误报告**：14 个错误码
 6. **pcode 扩展**：新增 4 条指令支持引用类型
 7. **虚拟机实现**：完整的 PL0VM 支持 12 条指令
-
----
-
-## 📅 项目时间线
-
-- **2026-06-17**：项目启动，下载参考资料，完成 W1 报告
-- **2026-06-18 上午**：完成 W2 词法/语法扩展
-- **2026-06-18 下午**：完成 W3 借用检查器 + W4 pcode/VM
-- **2026-06-18 晚上**：完成最终报告，项目收尾
 
 ---
 
@@ -202,18 +178,3 @@ E:\rust_com\mrustc\src\parse\
 > - 使用 C++ 实现
 > - 参考 mrustc（C++ 版 Rust 编译器）
 > - 实现了 Rust 风格的所有系统
-
----
-
-## 📞 联系方式
-
-如有问题，请查看：
-1. 最终报告：`PL0Plus/docs/report/final-report.md`
-2. Spec 文档：`docs/superpowers/specs/2026-06-17-pl0-rust-compiler-spec.md`
-3. Git 历史：`git log --oneline`
-
----
-
-**项目完成日期**：2026-06-18  
-**总代码行数**：约 5,000 行（新增）  
-**报告总字数**：约 15,000 字

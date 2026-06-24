@@ -1,4 +1,3 @@
-(* T10: 综合测试 - 包含所有 PL/0 特性 *)
 PROGRAM T10;
 CONST LIMIT = 50;
 VAR I, TOTAL, IS_EVEN;

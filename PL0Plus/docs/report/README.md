@@ -1,7 +1,5 @@
 # 报告目录
 
-> **最后更新：** 2026-06-18
-
 ---
 
 ## 📁 目录结构
@@ -10,9 +8,11 @@
 PL0Plus/docs/report/
 ├── README.md                          # 本文件
 ├── final-report.md                    # ⭐ 最终报告（15,000 字）
-├── content-2-rust-if-analysis.md      # W1 报告：Rust if 词法/语法分析
-├── content-3-borrow-checker.md        # W3 报告：借用检查器设计与实现
-└── content-3-pcode-vm.md              # W4 报告：pcode 扩展与虚拟机
+├── content-2-rust-if-analysis.md     # W1 报告
+├── content-3-lexer-grammar.md        # W2 报告
+├── content-3-borrow-checker.md       # W3 报告
+├── content-3-pcode-vm.md             # W4 报告
+└── w2-progress.md                    # W2 进度简报（历史文件，可删除）
 ```
 
 ---

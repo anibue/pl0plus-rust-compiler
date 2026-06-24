@@ -1,7 +1,6 @@
 # Build artifacts
 *.o
 *.obj
-*.exe
 *.dll
 *.so
 *.a
@@ -27,6 +26,8 @@ Release/
 Debug/
 *.Release/
 *.Debug/
+.qmake.stash
+object_script.*
 
 # IDE
 .vscode/
@@ -53,3 +54,11 @@ test1.cod
 # Local backups
 *.bak
 *~
+
+# Large archives (not needed in repo)
+*.rar
+*.zip
+*.7z
+
+# Reference materials (too large for repo)
+reference/

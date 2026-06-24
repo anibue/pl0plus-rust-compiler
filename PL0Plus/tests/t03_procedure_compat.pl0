@@ -1,4 +1,3 @@
-(* T3: PL/0 嵌套过程 — 兼容性测试 *)
 PROGRAM T03;
 VAR GLOBAL;
 PROCEDURE P1;

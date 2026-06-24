@@ -1,4 +1,3 @@
-(* T8: 重复-直到循环 *)
 PROGRAM T08;
 VAR N;
 BEGIN

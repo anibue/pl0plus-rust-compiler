@@ -1,4 +1,3 @@
-(* T9: 嵌套 if *)
 PROGRAM T09;
 VAR X, Y;
 BEGIN

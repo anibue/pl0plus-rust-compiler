@@ -1,7 +1,6 @@
 # 内容 2：Rust if 条件语句的词法/语法分析
 
-> 课程设计报告 — 内容 2 章节
-> 作者：xwmsu | 日期：2026-06-17 | 关联 [Spec §7 EBNF 文法](../../superpowers/specs/2026-06-17-pl0-rust-compiler-spec.md)
+> 关联 [Spec §7 EBNF 文法](../../superpowers/specs/2026-06-17-pl0-rust-compiler-spec.md)
 
 ---
 

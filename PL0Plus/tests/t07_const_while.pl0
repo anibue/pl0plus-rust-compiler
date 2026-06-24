@@ -1,4 +1,3 @@
-(* T7-T10: 完整 PL/0 程序组合 *)
 PROGRAM T07;
 CONST MAX = 100;
 VAR I, S;
