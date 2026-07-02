@@ -1104,3 +1104,37 @@ case OpCode::LODI:
 
 **总字数**：约 15,000 字
 **代码行数**：约 5,000 行（新增）
+
+---
+
+## 9. Bug 修复记录（2026-07-02）
+
+### 发现的关键问题
+
+| Bug | 位置 | 根因 | 状态 |
+|-----|------|------|------|
+| **Parser Segfault** | `compiler/AstNode.cpp` | `getFatherSize()` 未检查 `father==nullptr` | ✅ 已修复 |
+| **预测表缺项** | `compiler/grammar.cpp` | `getParsingTable/getFollow` 硬编码边界 `i<59/j<95` | ✅ 已修复 |
+| **不识别 PROGRAM** | `compiler/lexer.cpp` | Lexer 未映射 `program` → `PROCSYM` | ✅ 已修复 |
+| **空表项访问** | `compiler/parser.cpp` | 直接解引用 `->second` 不检查 `end()` | ✅ 已修复 |
+
+### 修复详情
+
+**1. `compiler/AstNode.cpp`**
+```cpp
+int AstNode::getFatherSize()
+{
+    if (father == nullptr) return 0;
+    return father->child.size();
+}
+```
+
+**2. `compiler/grammar.cpp`**
+- `getParsingTable()`: 循环边界改为 `i <= EXPRESSIONPLUSPLUS`
+- `getFollow()`: 循环边界改为 `i <= EXPRESSIONPLUSPLUS`
+
+**3. `compiler/lexer.cpp`**
+- 添加 `"program"` → `PROCSYM` 映射
+
+**4. `compiler/parser.cpp`**
+- 预测表查找添加 `end()` 检查，避免空表项解引用

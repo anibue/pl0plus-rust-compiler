@@ -39,6 +39,16 @@ PL0Plus/docs/report/
 
 **用途**：这是提交给老师的完整课程设计报告。
 
+### Bug 修复记录
+
+2026-07-02 修复 4 个关键 bug：
+- `compiler/AstNode.cpp`：`getFatherSize()` 空指针防护
+- `compiler/grammar.cpp`：预测表/First/Follow 边界扩展
+- `compiler/lexer.cpp`：添加 PROGRAM 关键字映射
+- `compiler/parser.cpp`：预测表访问防御检查
+
+详见 `final-report.md` 第 9 章。
+
 ---
 
 ### 分章报告

@@ -26,7 +26,8 @@ int AstNode::getWz()
 
 int AstNode::getFatherSize()
 {
-	return father->child.size();
+    if (father == nullptr) return 0;
+    return father->child.size();
 }
 
 AstNode * AstNode::getFather()

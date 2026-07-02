@@ -236,6 +236,11 @@ Lexer::Lexer(string t)
 					table.insert(pair<string, Token>(text.substr(rn, n - rn + 1), Token(PROCSYM, text.substr(rn, n - rn + 1), rr, rc)));
 					tokens.push_back(Token(PROCSYM, text.substr(rn, n - rn + 1), rr, rc));
 				}
+				else if (revalue == "program")
+				{
+					table.insert(pair<string, Token>(text.substr(rn, n - rn + 1), Token(PROCSYM, text.substr(rn, n - rn + 1), rr, rc)));
+					tokens.push_back(Token(PROCSYM, text.substr(rn, n - rn + 1), rr, rc));
+				}
 				else if (revalue == "begin")
 				{
 					table.insert(pair<string, Token>(text.substr(rn, n - rn + 1), Token(BEGINSYM, text.substr(rn, n - rn + 1), rr, rc)));
@@ -489,18 +494,15 @@ void Lexer::printTokens()
 
 Token Lexer::nextToken()
 {
-	if (cur != tokens.size())
-		return tokens[cur++];
-	if (tokens.empty())
-	{
-		errorTokens.push_back(Token(PERIODSYM, ".", 1, 1));
-		return Token(PERIODSYM, ".", 1, 1);
-	}
-	/*else
-	{
-		errorTokens.push_back(Token(PERIOD, ".", tokens[tokens.size() - 1].getPos().getRow(), tokens[tokens.size() - 1].getPos().getCol()));
-		return Token(PERIODSYM, ".", tokens[tokens.size() - 1].getPos().getRow(), tokens[tokens.size() - 1].getPos().getCol());
-	}*/
+    if (cur != tokens.size())
+        return tokens[cur++];
+    if (tokens.empty())
+    {
+        errorTokens.push_back(Token(PERIODSYM, ".", 1, 1));
+        return Token(PERIODSYM, ".", 1, 1);
+    }
+    // 已经读完所有 token，返回 EOF（period）
+    return Token(PERIODSYM, ".", tokens.back().getPos().getRow(), tokens.back().getPos().getCol());
 }
 
 bool Lexer::tokensEnd()

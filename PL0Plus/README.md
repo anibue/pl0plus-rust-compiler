@@ -180,8 +180,36 @@ make
 
 ---
 
-## ✅ 项目完成
+## 🐛 Bug 修复与代码完善（2026-07-02）
 
-**总代码行数**：约 5,000 行（新增）
-**报告总字数**：约 15,000 字
-**Git 提交数**：15 次
+### 发现的关键问题
+
+| Bug | 位置 | 根因 | 状态 |
+|-----|------|------|------|
+| **Parser Segfault** | `compiler/AstNode.cpp:29` | `getFatherSize()` 未检查 `father==nullptr`，根节点空指针解引用 | ✅ 已修复 |
+| **预测表缺项** | `compiler/grammar.cpp:463,583` | `getParsingTable()` 和 `getFollow()` 使用硬编码边界 `i<59/j<95`，PL/0+ 扩展后枚举值超范围 | ✅ 已修复 |
+| **不识别 PROGRAM** | `compiler/lexer.cpp:250-270` | Lexer 未将 `program` 映射到 `PROCSYM` Token | ✅ 已修复 |
+| **空表项访问** | `compiler/parser.cpp:734` | 直接解引用 `->second` 不检查 `end()` 迭代器 | ✅ 已添加防御检查 |
+
+### 修复内容
+
+**1. `compiler/AstNode.cpp`**
+```cpp
+int AstNode::getFatherSize()
+{
+    if (father == nullptr) return 0;  // 🔧 防护根节点
+    return father->child.size();
+}
+```
+
+**2. `compiler/grammar.cpp`**
+- `getParsingTable()`: 循环边界从 `i<59` 改为 `i <= EXPRESSIONPLUSPLUS`
+- `getFollow()`: 循环边界从 `i<95` 改为 `i <= EXPRESSIONPLUSPLUS`
+
+**3. `compiler/lexer.cpp`**
+- 添加 `"program"` → `PROCSYM` 关键字映射
+
+**4. `compiler/parser.cpp`**
+- 预测表查找添加 `tableIt == parsingTable.end()` 防御检查
+- 使用 `tableIt->second` 之前确认非空
+- 预测表无匹配时跳过当前 token 而非崩溃

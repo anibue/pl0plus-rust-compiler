@@ -7,41 +7,17 @@
 #include "grammar.h"
 #include<algorithm>
 #include<iomanip>
-using namespace GrammarSymSpace;
 Grammar::Grammar()
 {
-	getOriginGrammar();
-	getOriginList();
-
-	/*cout << "----------------原始文法：------------------\n";
-	printGrammarList();*/
-	//transportToList();
-	eliminateLeftRecursive();
-	//leftFactoring();
-
-	
-
-	
-	
-	getFirst();
-	
-
-	getFollow();
-	
-
-	getParsingTable();
-	
-	//输出该list
-	//cout << "----------------化简文法：------------------\n";
-	//printGrammarList();
-	//cout << "-----------------first:---------------\n";
-	//printFirst();
-	//
-	//cout << "----------------follow:----------------\n";
-	//printFollow();
-	//cout << "----------------parsingTable:----------------\n";
-	//printParsingTable();
-	
+    fprintf(stderr, "[Grammar] step 2 - eliminateLeftRecursive\n"); fflush(stderr);
+    eliminateLeftRecursive();
+    fprintf(stderr, "[Grammar] step 3 - getFirst\n"); fflush(stderr);
+    getFirst();
+    fprintf(stderr, "[Grammar] step 4 - getFollow\n"); fflush(stderr);
+    getFollow();
+    fprintf(stderr, "[Grammar] step 5 - getParsingTable\n"); fflush(stderr);
+    getParsingTable();
+    fprintf(stderr, "[Grammar] done\n"); fflush(stderr);
 }
 
 void Grammar::getOriginGrammar()
@@ -484,7 +460,7 @@ void Grammar::getFollow()
 	}*/
 	//follow.insert(pair<int, set<int> >{EXPRESSION, set<int>{ENDEOF}});
 	int oldSize = 0, newSize = 0x3f3f3f;
-	for (int i = 0; i < 95; ++i)
+	for (int i = 0; i <= EXPRESSIONPLUSPLUS; ++i)
 	{
 		follow.insert(pair<int, set<int> >{i, set<int>{}});
 	}
@@ -602,9 +578,9 @@ void Grammar::printFollow()
 
 void Grammar::getParsingTable()
 {
-	for (int i = 0; i < 59; ++i)
+	for (int i = 0; i <= EXPRESSIONPLUSPLUS; ++i)
 	{
-		for (int j = 59; j < 95; ++j)
+		for (int j = CONSTSYM; j <= ENDEOF; ++j)
 		{
 			parsingTable.insert(pair<parsingNode, vector<int> >{parsingNode(i, j), vector<int>{}});
 		}
